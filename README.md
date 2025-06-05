@@ -1,9 +1,7 @@
-# Auction
+# Bid Bazaar
 This is my first github repository 
 <br>
 Author :- Rushil parmar
-
-# Bid Bazaar
 
 Welcome to Bid Bazaar, an innovative online auction platform that brings the excitement of traditional auctions to the digital world. Our platform modernizes the auction process, offering a user-friendly, secure environment for buyers and sellers to engage in real-time bidding.
 
