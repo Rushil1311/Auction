@@ -1,4 +1,4 @@
-# Bid Bazaar
+# auction
 This is my first github repository 
 <br>
 Author :- Rushil parmar
