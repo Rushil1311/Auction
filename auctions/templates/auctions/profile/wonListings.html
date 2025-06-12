@@ -1,0 +1,120 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="bg-gray-100 dark:bg-gray-900 min-h-[100vh] pt-[12vh] flex flex-col gap-6 items-center justify-center">
+
+        <h1 class="text-gray-100 text-7xl poppins-extrabold">Won Auctions</h1>
+        
+    {% if listings %}
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+            {% for listing in listings %}
+                <div class="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+                    <a class="block group" href="{% url 'listing' listing.id %}">
+                        <div class="image-row overflow-hidden">
+                            <img src="/media/{{ listing.image }}" alt="{{ listing.title }}" class="listing-image object-cover w-full h-40 rounded-lg">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 group-hover:text-blue-500">{{ listing.title }}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400"> Category: {{ listing.category }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400"> Final Bid: ₹ {{ listing.starting_value }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 blink-green "> Congratulations You Won ! </p>
+                        </a>
+                    </div>
+  <div>                       <!-- "Pay Now" Button -->
+<button id="pay-button-{{ listing.id }}" 
+class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-md hover:bg-blue-700"
+onclick="initiatePayment({{ listing.id }})">
+Pay Now
+</button>
+</div>
+
+<div>
+<!-- Hidden "Approved" Text -->
+<p id="approved-text-{{ listing.id }}" 
+class="text-green-500 font-bold mt-4" 
+style="display: none;">
+✅ Approved
+</p>
+</div>                        
+                    
+                </div>
+            {% endfor %}
+
+        </section>
+    </div>
+    {% else %}
+
+    <div class="bg-gray-100 dark:bg-gray-900 min-h-[100vh] flex flex-col gap-6 items-center justify-center">
+        <h1 class="text-gray-100 text-4xl poppins-extrabold"> 
+            You have not won any auctions yet! 
+        </h1>
+    </div>
+
+    {% endif %}
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    function initiatePayment(listingId) {
+        let payButton = document.getElementById(`pay-button-${listingId}`);
+        let approvedText = document.getElementById(`approved-text-${listingId}`);
+    
+        // Check if the user has already paid
+        if (localStorage.getItem(`paid_${listingId}`)) {
+            payButton.style.display = "none";  // Hide the "Pay Now" button
+            approvedText.style.display = "block";  // Show "Approved" text
+            return;
+        }
+    
+        fetch(`/initiate-payment/${listingId}/`, {
+            method: "GET",
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("Error: " + data.error);
+                return;
+            }
+    
+            var options = {
+                "key": data.razorpay_key,  // Razorpay key from Django response
+                "amount": data.amount,
+                "currency": "INR",
+                "name": "Your Website",
+                "description": "Test Transaction",
+                "order_id": data.order_id,
+                "handler": function (response) {
+                    alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+    
+                    // Mark payment as completed in localStorage
+                    localStorage.setItem(`paid_${listingId}`, "true");
+    
+                    // Hide the "Pay Now" button and show "Approved"
+                    payButton.style.display = "none";
+                    approvedText.style.display = "block";
+    
+                    // Redirect to the success page
+                    window.location.href = "/payment-success/";
+                },
+                "prefill": {
+                    "name": "John Doe",
+                    "email": "johndoe@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+    
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while initiating the payment.");
+        });
+    }
+      
+</script>
+
+{% endblock %}

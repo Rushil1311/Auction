@@ -1,0 +1,220 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+{% load static %}
+
+<div class="dark:bg-gray-900 flex justify-center items-center h-screen">
+  <!-- Left: Image -->
+  <div class="relative w-1/2 h-screen hidden lg:block flex justify-center items-center">
+    <p class="absolute inset-0 flex flex-col z-10 text-xl text-center mt-[30vh] text-white">
+      An Auction Platform for <br />
+      <strong>Collectors</strong>
+    </p>
+    <img
+      src="{% static 'auctions/left-bg.png' %}"
+      alt="Placeholder Image"
+      class="absolute object-fill w-full h-full z-0"
+    />
+  </div>
+
+  <!-- Right: Register Form -->
+  <div class="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
+
+    {% if message %}
+    <div class="flex bg-blue-100 rounded-lg p-4 mb-4 text-sm text-blue-700" role="alert">
+      <svg class="w-5 h-5 inline mr-3" fill="currentColor" viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clip-rule="evenodd"></path>
+      </svg>
+      <div>
+        <span class="font-medium">{{message}}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <h1 class="text-2xl font-semibold mb-4 text-white">Register</h1>
+
+    <form action="{% url 'register' %}" method="POST" onsubmit="return validateRegisterForm()">
+      {% csrf_token %}
+
+      <!-- Email Input -->
+      <div class="mb-4">
+        <label for="email" class="block text-gray-400">Email</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          required
+          placeholder="Email Address"
+          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Username Input -->
+      <div class="mb-4">
+        <label for="username" class="block text-gray-400">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          required
+          minlength="3"
+          placeholder="Username"
+          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Password Input -->
+      <div class="mb-4">
+        <label for="password" class="block text-gray-400">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          placeholder="Password"
+          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+          autocomplete="off"
+          onkeyup="validatePasswordStrength()"
+        />
+        <div id="password-strength" class="text-sm text-red-500"></div>
+      </div>
+
+      <!-- Confirm Password Input -->
+      <div class="mb-4">
+        <label for="confirmation" class="block text-gray-400">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmation"
+          name="confirmation"
+          required
+          placeholder="Confirm Password"
+          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+          autocomplete="off"
+          onkeyup="validatePasswordsMatch()"
+        />
+        <div id="confirm-password-message" class="text-sm text-red-500 hidden">Passwords do not match.</div>
+      </div>
+
+      <!-- Sign-up Button -->
+      <button
+        type="submit"
+        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
+      >
+        Sign-up
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="mt-6 text-gray-400 text-center">
+      <p>Already have an account? <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Login Here</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'auctions/js/register-validation.js' %}"></script>
+
+<script>
+function validateRegisterForm() {
+  const email = document.getElementById('email').value.trim();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const confirmation = document.getElementById('confirmation').value;
+
+  const passwordRegex = {
+    length: /.{8,}/,
+    uppercase: /[A-Z]/,
+    lowercase: /[a-z]/,
+    digit: /\d/,
+    special: /[!@#$%^&*(),.?":{}|<>]/
+  };
+
+  if (!email.includes('@') || !email.includes('.')) {
+    alert('Please enter a valid email address.');
+    return false;
+  }
+
+  if (username.length < 3) {
+    alert('Username must be at least 3 characters.');
+    return false;
+  }
+
+  if (!passwordRegex.length.test(password)) {
+    alert('Password must be at least 8 characters long.');
+    return false;
+  }
+
+  if (!passwordRegex.uppercase.test(password)) {
+    alert('Password must contain at least one uppercase letter.');
+    return false;
+  }
+
+  if (!passwordRegex.lowercase.test(password)) {
+    alert('Password must contain at least one lowercase letter.');
+    return false;
+  }
+
+  if (!passwordRegex.digit.test(password)) {
+    alert('Password must contain at least one number.');
+    return false;
+  }
+
+  if (!passwordRegex.special.test(password)) {
+    alert('Password must contain at least one special character.');
+    return false;
+  }
+
+  if (password !== confirmation) {
+    alert('Passwords do not match.');
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordsMatch() {
+  const password = document.getElementById('password').value;
+  const confirmation = document.getElementById('confirmation').value;
+  const confirmMessage = document.getElementById('confirm-password-message');
+
+  if (password !== confirmation) {
+    confirmMessage.classList.remove('hidden');
+  } else {
+    confirmMessage.classList.add('hidden');
+  }
+}
+
+function validatePasswordStrength() {
+  const password = document.getElementById('password').value;
+  const strengthMessage = document.getElementById('password-strength');
+
+  const strengthCriteria = [
+    { regex: /.{8,}/, message: "Password must be at least 8 characters long." },
+    { regex: /[A-Z]/, message: "Password must contain at least one uppercase letter." },
+    { regex: /[a-z]/, message: "Password must contain at least one lowercase letter." },
+    { regex: /\d/, message: "Password must contain at least one number." },
+    { regex: /[!@#$%^&*(),.?":{}|<>]/, message: "Password must contain at least one special character." }
+  ];
+
+  let errors = [];
+
+  strengthCriteria.forEach(criteria => {
+    if (!criteria.regex.test(password)) {
+      errors.push(criteria.message);
+    }
+  });
+
+  if (errors.length > 0) {
+    strengthMessage.textContent = errors.join(' ');
+  } else {
+    strengthMessage.textContent = 'Password is strong.';
+    strengthMessage.classList.remove('text-red-500');
+    strengthMessage.classList.add('text-green-500');
+  }
+}
+</script>
+
+{% endblock %}

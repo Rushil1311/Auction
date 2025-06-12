@@ -1,0 +1,140 @@
+
+
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+<section class="dark:bg-gray-900 w-[100vw] min-h-[100vh] pt-[10vh]">
+    <div class="container mx-auto py-8">
+        <h1 class="text-gray-300 text-2xl font-bold mb-4">Edit Profile</h1>
+        <form method="post" enctype="multipart/form-data" 
+              class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" 
+              onsubmit="return validateForm()">
+            {% csrf_token %}
+
+            <!-- First Name -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="first_name">First Name</label>
+                <input 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                    id="first_name" 
+                    type="text" 
+                    name="first_name" 
+                    placeholder="First Name" 
+                    value="{{ user.first_name }}" 
+                    required 
+                    pattern="[A-Za-z]{2,}" 
+                    title="Please enter at least 2 alphabetic characters.">
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="last_name">Last Name</label>
+                <input 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                    id="last_name" 
+                    type="text" 
+                    name="last_name" 
+                    placeholder="Last Name" 
+                    value="{{ user.last_name }}" 
+                    required 
+                    pattern="[A-Za-z]{2,}" 
+                    title="Please enter at least 2 alphabetic characters.">
+            </div>
+
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
+                <input 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                    id="email" 
+                    type="email" 
+                    name="email" 
+                    placeholder="Email" 
+                    value="{{ user.email }}" 
+                    required>
+            </div>
+
+            <!-- Address -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="address">Address</label>
+                <input 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                    id="address" 
+                    type="text" 
+                    name="address" 
+                    placeholder="Address" 
+                    value="{{ user.address }}" 
+                    required 
+                    minlength="5" 
+                    title="Please enter at least 5 characters.">
+            </div>
+
+            <!-- Profile Picture -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_picture">Profile Picture</label>
+                <input 
+                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4" 
+                    type="file" 
+                    name="profile_picture" 
+                    id="profile_picture" 
+                    accept="image/*">
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+                type="submit" 
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Save Changes
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- Optional JS Validation -->
+<script>
+function validateForm() {
+    const firstName = document.getElementById("first_name").value.trim();
+    const lastName = document.getElementById("last_name").value.trim();
+    const address = document.getElementById("address").value.trim();
+
+    if (firstName.length < 2 || !/^[A-Za-z]+$/.test(firstName)) {
+        alert("First name must be at least 2 alphabetic characters.");
+        return false;
+    }
+    if (lastName.length < 2 || !/^[A-Za-z]+$/.test(lastName)) {
+        alert("Last name must be at least 2 alphabetic characters.");
+        return false;
+    }
+    if (address.length < 5) {
+        alert("Address must be at least 5 characters long.");
+        return false;
+    }
+
+    return true; // Allow form submission
+}
+</script>
+{% endblock %}
+
+
+<script>
+    function validateForm() {
+        const firstName = document.getElementById("first_name").value.trim();
+        const lastName = document.getElementById("last_name").value.trim();
+        const address = document.getElementById("address").value.trim();
+    
+        if (firstName.length < 2 || !/^[A-Za-z]+$/.test(firstName)) {
+            alert("First name must be at least 2 alphabetic characters.");
+            return false;
+        }
+        if (lastName.length < 2 || !/^[A-Za-z]+$/.test(lastName)) {
+            alert("Last name must be at least 2 alphabetic characters.");
+            return false;
+        }
+        if (address.length < 5) {
+            alert("Address must be at least 5 characters long.");
+            return false;
+        }
+        return true; // All validations passed
+    }
+    </script>
+    

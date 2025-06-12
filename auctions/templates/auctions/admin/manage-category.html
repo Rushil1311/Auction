@@ -1,0 +1,194 @@
+{% extends "auctions/admin/admin_layout.html" %}
+{% load static %}
+
+{% block body %}
+<style>
+    /* Main Container */
+.manage-category-body {
+    font-family: 'Arial', sans-serif;   
+    background-color: #f8fafc;
+    color: #333;
+    padding: 20px;
+}
+
+/* Content Wrapper */
+.manage-category-container {
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+.manage-category-container h2 {
+    color: #2c3e50;
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.manage-category-container h3 {
+    color: #34495e;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Form Styling */
+.manage-category-form {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.manage-category-form .form-group {
+    margin-bottom: 10px;
+}
+
+.manage-category-form input[type="text"],
+.manage-category-form input[type="file"] {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.manage-category-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.manage-category-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Table Styling */
+.manage-category-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.manage-category-table th,
+.manage-category-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.manage-category-table th {
+    background-color: #3498db;
+    color: white;
+}
+
+.manage-category-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Category Image */
+.category-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Action Buttons */
+.manage-category-actions a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: white;
+    margin: 2px;
+}
+
+.manage-category-actions .edit {
+    background-color: #f39c12;
+}
+
+.manage-category-actions .delete {
+    background-color: #e74c3c;
+}
+
+.manage-category-actions a:hover {
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .manage-category-container {
+        padding: 15px;
+    }
+
+    .manage-category-table th,
+    .manage-category-table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+</style>
+<div class="manage-category-body" style="width: 100%;">
+    <div class="manage-category-container">
+        <h2>Manage Categories</h2>
+
+        <!-- Add Category Form -->
+        <div class="manage-category-form">
+            <h3>Add New Category</h3>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'add_category' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Category Name:</label>
+                    <input type="text" name="name" placeholder="Enter category name" required>
+                </div>
+                <div class="form-group">
+                    <label>Category Image:</label>
+                    <input type="file" name="image">
+                </div>
+                <button type="submit">Add Category</button>
+            </form>
+        </div>
+
+        <!-- Category List -->
+        <h3>Existing Categories</h3>
+        <table class="manage-category-table">
+            <thead>
+                <tr>
+                    <th>no</th>
+                    <th>Category Name</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-image">
+                        {% else %}
+                            <span class="text-gray-500">No Image</span>
+                        {% endif %}
+                    </td>
+                    <td class="manage-category-actions">
+                        <a href="{% url 'edit_category' category.id %}" class="edit">Edit</a>
+                        <a href="{% url 'delete_category' category.id %}" class="delete" onclick="return confirm('Are you sure?')">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-gray-500">No categories found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

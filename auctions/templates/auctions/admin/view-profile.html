@@ -1,0 +1,47 @@
+{% extends "auctions/admin/admin_layout.html" %}
+{% load static %}
+{% block body %}
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+
+    <!-- View Profile Button -->
+    <button id="openProfile" class="bg-gray-700 hover:bg-gray-900 hover:text-gray-200 text-white font-bold py-2 px-4 rounded transition duration-300">
+        View Profile
+    </button>
+
+    <!-- Profile Modal (Card) -->
+    <div id="profileModal" class="modal hidden fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div class="bg-white p-6 rounded-2xl shadow-xl profile-card w-96 relative transform transition-all duration-300 hover:scale-105">
+            <button id="closeProfile" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+            <div class="text-center">
+                <img src="https://via.placeholder.com/100" alt="User Avatar" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md">
+                <h2 class="text-xl font-semibold text-gray-800">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</h2>
+                <p class="text-gray-600 text-sm">{{ user.email }}</p>
+                <p class="text-gray-500 mt-2 text-sm"><address></address>: {{ user.address }}</p> <!-- Assuming phone_number is in the User Profile model -->
+                <p class="text-gray-400 text-sm">Joined: {{ user.date_joined|date:"F d, Y" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Open Profile Modal
+        document.getElementById('openProfile').addEventListener('click', function() {
+            document.getElementById('profileModal').classList.remove('hidden');
+        });
+
+        // Close Profile Modal
+        document.getElementById('closeProfile').addEventListener('click', function() {
+            document.getElementById('profileModal').classList.add('hidden');
+        });
+
+        // Close Modal if Clicked Outside
+        window.addEventListener('click', function(event) {
+            let modal = document.getElementById('profileModal');
+            if (event.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "auctions/admin/admin_layout.html" %}
+{% load static %}
+{% block body %}
+
+<head>
+    <script>
+        // Function to open the profile modal and set user details dynamically
+        function openProfileModal(username, email, address) {
+            document.getElementById('profileName').innerText = username;
+            document.getElementById('profileEmail').innerText = "Email: " + email;
+            document.getElementById('profileAddress').innerText = "Address: " + address;
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        // Function to close the profile modal
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            let modal = document.getElementById('profileModal');
+            if (event.target === modal) {
+                closeProfileModal();
+            }
+        };
+    </script>
+
+</head>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col">
+    <header class="bg-white border-b-2 border-gray-200 py-4">
+        <h1 class="text-lg text-center font-semibold"> BidBazaar Administration </h1>
+    </header>
+
+    <!-- Manage Users Section -->
+    <div class="mx-4 my-4 bg-white border rounded-lg p-4 shadow-lg">
+        <h2 class="text-lg font-semibold mb-2">Manage Users</h2>
+        <ul>
+            {% for user in users %}
+            <li class="my-4">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                      {% if user.profile_picture %}
+                          <img src="" alt="{{ user.username }}" class="h-10 w-10 rounded-full border-2 border-gray-300 shadow-sm">
+                      {% else %}
+                          <img src="{% static 'auctions/default_pfp.svg' %}" alt="{{ user.username }}" class="h-10 w-10 rounded-full border-2 border-gray-300 shadow-sm">
+                      {% endif %}
+                    </div>
+                    <div class="ml-4">  
+                        <div class="text-sm font-medium text-gray-900">{{ user.username }}</div>
+                        <div class="text-sm text-gray-500">{{ user.email }}</div>
+                    </div>
+                  </div>
+                    
+                  <div>
+                    <button onclick="openProfileModal('{{ user.username }}', '{{ user.email }}','{{ user.address }}')" 
+                        class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md">
+                        View Profile
+                    </button>
+                  </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Profile Modal (Hidden by Default) -->
+<div id="profileModal" class="hidden fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-2xl shadow-2xl w-96 relative transform transition-all duration-300 hover:scale-105">
+        <button onclick="closeProfileModal()" class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-2xl">&times;</button>
+        <div class="text-center">
+            <h2 id="profileName" class="text-xl font-semibold text-gray-800"></h2>
+            <p id="profileEmail" class="text-gray-600 text-sm"></p>
+            <p id="profileAddress" class="text-gray-600 text-sm mt-2"></p>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

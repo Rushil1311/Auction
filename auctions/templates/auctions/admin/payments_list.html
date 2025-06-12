@@ -1,0 +1,53 @@
+{% extends "auctions/admin/admin_layout.html" %}
+{% load static %}
+{% block body %}    <script src="https://cdn.tailwindcss.com"></script> 
+
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+
+
+
+    <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">All Payments</h2>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-blue-500 text-white">
+                    <th class="border p-2">#</th>
+                    <th class="border p-2">User</th>
+                    <th class="border p-2">Listing</th>
+                    <th class="border p-2">Amount</th>
+                    <th class="border p-2">Payment ID</th>
+                    <th class="border p-2">Status</th>
+                    <th class="border p-2">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr class="text-center bg-gray-100 border">
+                    <td class="border p-2">{{ forloop.counter }}</td>
+                    <td class="border p-2">{{ payment.user.username }}</td>
+                    <td class="border p-2">{{ payment.listing.title }}</td>
+                    <td class="border p-2">₹{{ payment.amount }}</td>
+                    <td class="border p-2">{{ payment.razorpay_order_id }}</td>
+                    <td class="border p-2">
+                        {% if payment.status == "Success" %}
+                            <span class="text-green-600 font-bold">✅ Successfull</span>
+                        {% else %}
+                            <span class="text-red-600 font-bold">✅ Successfull</span>
+                        {% endif %}
+                    </td>
+                    <td class="border p-2">{{ payment.created_at|date:"M d, Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="p-4 text-center text-gray-500">No payments found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+<br><br><br><br><br><br><br><br>
+
+
+{% endblock %}
